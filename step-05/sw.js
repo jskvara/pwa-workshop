@@ -1,5 +1,8 @@
 var cacheName = 'pwa-ws';
-var filesToCache = [];
+var filesToCache = [
+    '/index.html',
+    '/index.html?homescreen=1', // you have to add exact url with query parameters
+];
 
 self.addEventListener('install', function(e) {
     console.log('[ServiceWorker] Install');
@@ -30,7 +33,8 @@ self.addEventListener('push', function(event) {
             body: 'The Message',
             icon: 'images/icon.png',
             tag: 'my-tag'
-        }));
+        })
+    );
 });
 
 self.addEventListener('notificationclick', function(event) {

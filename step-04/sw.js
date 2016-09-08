@@ -1,5 +1,10 @@
 var cacheName = 'pwa-ws';
-var filesToCache = [];
+var filesToCache = [
+    '/',
+    '/index.html',
+    '/index.html?homescreen=1', // you have to add exact url with query parameters
+    '/main.js',
+];
 
 self.addEventListener('install', function(e) {
     console.log('[ServiceWorker] Install');

@@ -1,7 +1,7 @@
 {
   "short_name": "PWA workshop",
   "name": "Progressive web apps workshop",
-  "gcm_sender_id": "593836075156",
+  "gcm_sender_id": "1026906795551",
   "icons": [
     {
       "src":"images/icon.png",
@@ -10,8 +10,8 @@
     }
   ],
   "start_url": "/",
-  "background_color": "#000",
-  "theme_color": "#536878",
+  "background_color": "#3f51b5",
+  "theme_color": "#3f51b5",
   "display": "standalone",
   "orientation": "portrait"
 }

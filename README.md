@@ -155,8 +155,8 @@ Create a new JSON called `manifest.json` in the same folder as your `index.html`
     }
   ],
   "start_url": "/",
-  "background_color": "#000",
-  "theme_color": "#536878",
+  "background_color": "#3f51b5",
+  "theme_color": "#3f51b5",
   "display": "standalone",
   "orientation": "portrait"
 }
@@ -204,7 +204,6 @@ Important options:
   }]
 ```
 
--dir
 
 For more information, read this article: [Installable Web Apps with the Web App Manifest in Chrome for Android](https://developers.google.com/web/updates/2014/11/Support-for-installable-web-apps-with-webapp-manifest-in-chrome-38-for-Android)
 or [W3C specification](https://w3c.github.io/manifest/)
@@ -292,7 +291,7 @@ You can also Indexed DB for JSON and simple data.
 
 ## Step 5 - Push notifications
 
-1) Make a project on the Google Developer Console
+1. Make a project on the Google Developer Console
 
 From the [Google Developers Console](https://console.developers.google.com/) create a new project:
 
@@ -329,24 +328,26 @@ Get the API key — you'll need this later:
 
 From the IAM and Admin Settings page, get the Project number — you'll need this later: 
 
-![Browser Key](https://github.com/jskvara/pwa-workshop/blob/master/docs/cdg-browser-key.png)
+![Project Number](https://github.com/jskvara/pwa-workshop/blob/master/docs/cdg-project-number.png)
 
 Congratulations!
 
 You've now created a Google Cloud Messaging project. 
 
 
-2) Add `gcm_sender_id` to `manifest.json` file:
+2. Add `gcm_sender_id` to `manifest.json` file:
  
 ```
   ...
   "name": "Progressive web apps workshop",
-  "gcm_sender_id": "593836075156",
+  "gcm_sender_id": "1026906795551",
   "icons": [
   ...
 ```
 
-3) Update `main.js`
+3. Subscribe to push notifications
+
+Update `main.js` with the following code:
 
 ```js
     ...
@@ -359,10 +360,22 @@ You've now created a Google Cloud Messaging project.
     ...
 ```
 
-`https://android.googleapis.com/gcm/send/APA91bGdUldXgd4Eu9MD0qNmGd0K6fu0UvhhNGL9FipYzisrRWbc-qsXpKbxocgSXm7lQuaEOwsJcEWWadNYTyqN8OTMrvNA94shns_BfgFH14wmYw67KZGHsAg74sm1_H7MF2qoyRCwr6AsbTf5n7Cgp7ZqsBZwl8IXGovAuknubr5gaJWBnDc`
+To send a push notification message you need to create a following HTTP request:
 
+```
+curl --header "Authorization: key=<PUBLIC_API_KEY>" --header "Content-Type: application/json" https://android.googleapis.com/gcm/send -d "{\"registration_ids\":[\"<SUBSCRIPTION_ID>\"]}"`
+```
 
-4) Show notification
+Where PUBLIC_API_KEY is the key you've generated on GCM site, which looks like: `AIzaSyAMzp4LO9CiODdPEpfe7eQtdKHlB3foxcs`
+And SUBSCRIPTION_ID is he last part of the subscription endpoint URL, and looks like this: `APA91bHMaA-R0eZrPisZCGfwwd7z1EzL7P7Q7cyocVkxBU3nXWed1cQYCYvFglMHIJ40kn-jZENQ62UFgg5QnEcqwB5dFZ-AmNZjATO8QObGp0p1S6Rq2tcCuUibjnyaS0UF1gIM1mPeM25MdZdNVLG3dM6ZSfxV8itpihroEN5ANj9A26RU2Uw`
+ 
+> Note: be careful when copying the URL from console, part of it might be replaced by `...`
+
+```
+curl --header "Authorization: key=AIzaSyAc2e8MeZHA5NfhPANea01wnyeQD7uVY0c" --header "Content-Type: application/json" https://android.googleapis.com/gcm/send -d "{\"registration_ids\":[\"APA91bE9DAy6_p9bZ9I58rixOv-ya6PsNMi9Nh5VfV4lpXGw1wS6kxrkQbowwBu17ryjGO0ExDlp-S-mCiwKc5HmVNbyVfylhgwITXBYsmSszpK0LpCxr9Cc3RgxqZD7614SqDokwsc3vIEXkaT8OPIM-mnGMRYG1-hsarEU4coJWNjdFP16gWs\"]}"
+```
+
+4. Show notification
 
 ```js
 ...
@@ -381,7 +394,7 @@ self.addEventListener('push', function(event) {
 });
 ```
 
-5) Open notification
+5. Open notification
 
 ```js
 ...
@@ -415,7 +428,7 @@ self.addEventListener('notificationclick', function(event) {
 
 ```
 
-6) Subscribe and unsubscribe
+6. Subscribe and unsubscribe
 
 ```js
 var serviceWorkerRegistration;
@@ -472,15 +485,15 @@ function unsubscribe() {
 
 If you’re new to Firebase, you’ll need to sign in using your Google account and install some tools first.
 
-1) Sign in to Firebase with your Google account at https://firebase.google.com/
-2) Install the Firebase tools via npm: `npm install -g firebase-tools`
+1. Sign in to Firebase with your Google account at https://firebase.google.com/
+2. Install the Firebase tools via npm: `npm install -g firebase-tools`
 
 Once your account has been created and you’ve signed in, you’re ready to deploy!
 
-1) Create a new app at https://console.firebase.google.com/
-2) If you haven’t recently signed in to the Firebase tools, update your credentials: `firebase login`
-3) Initialize your app, and provide the directory where your completed app lives: `firebase init`
-4) Finally, deploy the app to Firebase: `firebase deploy`
-5) Celebrate. You’re done! Your app will be deployed to the domain: `https://YOUR-FIREBASE-APP.firebaseapp.com`
+1. Create a new app at https://console.firebase.google.com/
+2. If you haven’t recently signed in to the Firebase tools, update your credentials: `firebase login`
+3. Initialize your app, and provide the directory where your completed app lives: `firebase init`
+4. Finally, deploy the app to Firebase: `firebase deploy`
+5. Celebrate. You’re done! Your app will be deployed to the domain: `https://YOUR-FIREBASE-APP.firebaseapp.com`
 
 Further reading: [Firebase Hosting Guide](https://firebase.google.com/docs/hosting/)
