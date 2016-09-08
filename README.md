@@ -211,7 +211,9 @@ or [W3C specification](https://w3c.github.io/manifest/)
 
 ## Step 3 - Service worker
 
-Adding new pages is really easy. At first we need to update `app/routing.html` file and add new route:
+> In this step we add a service worker to our application
+
+Update file `js/main.js` and add the following code:
 
 ```js
 if ('serviceWorker' in navigator) {
@@ -227,6 +229,9 @@ if ('serviceWorker' in navigator) {
 }
 ```
 
+Now we've registered a service worker, now we can define the functionality for it.
+we have to update `sw.js` file with the following content:
+
 ```js
 console.log('Started', self);
 
@@ -238,23 +243,25 @@ self.addEventListener('install', function(event) {
 self.addEventListener('activate', function(event) {
     console.log('Activated', event);
 });
-
-self.addEventListener('push', function(event) {
-    console.log('Push message received', event);
-});
 ```
+
+Now you can open the Developer console in your browser and switch to `Application` tab.
+You should see our registered service worker in `Service workers` section. 
 
 ## Step 4 - Cache Application Data
 
-> In this step we're going to create a new Polymer element
+> In this step we updated the service worker to cache all data.
 
-We add a list of speakers to our devfest page using our own `devfest-speakers` element.
-
-Create a new directory `devfest` in `app/elements` folder. In this directory we create a new file `devfest-speakers.html` with the following content:
+Update the `sw.js` file with the following content:
 
 ```js
 var cacheName = 'pwa-ws';
-var filesToCache = [];
+var filesToCache = [
+    '/',
+    '/index.html',
+    '/index.html?homescreen=1', // you have to add exact url with query parameters
+    '/main.js',
+];
 
 self.addEventListener('install', function(e) {
     console.log('[ServiceWorker] Install');
@@ -267,6 +274,9 @@ self.addEventListener('install', function(e) {
 });
 ```
 
+Service worker can intercept every request that the page makes.
+So we can define, what to do with the request, either return a cached version or request the network. 
+
 ```js
 self.addEventListener('fetch', function(event) {
     console.log(event.request.url);
@@ -278,11 +288,52 @@ self.addEventListener('fetch', function(event) {
 });
 ```
 
+You can also Indexed DB for JSON and simple data.
+
 ## Step 5 - Push notifications
 
-We're going to add list of speakers to our element. At first we add JavaScript collection to our element:
-
 1) Make a project on the Google Developer Console
+
+From the [Google Developers Console](https://console.developers.google.com/) create a new project:
+
+
+Select APIs for the project
+
+From the API Manager menu, select Overview:
+
+![Create](https://github.com/jskvara/pwa-workshop/blob/master/docs/cdg-create.png)
+
+From the Google APIs list, select Google Cloud Messaging.
+
+![GCM](https://github.com/jskvara/pwa-workshop/blob/master/docs/cdg-gcm.png)
+
+
+Get credentials
+
+From the APIs & auth menu, select Credentials, click the Add credentials dropdown button, and select API key:
+
+![Credentials](https://github.com/jskvara/pwa-workshop/blob/master/docs/cdg-credentials.png)
+
+Click the Browser Key button:
+
+![Browser Key](https://github.com/jskvara/pwa-workshop/blob/master/docs/cdg-browser-key.png)
+
+Leave the HTTP referrers field blank and click the Create button:
+
+![Create](https://github.com/jskvara/pwa-workshop/blob/master/docs/cdg-create.png)
+
+Get the API key — you'll need this later:
+
+![Api Key](https://github.com/jskvara/pwa-workshop/blob/master/docs/cdg-api-key.png)
+
+
+From the IAM and Admin Settings page, get the Project number — you'll need this later: 
+
+![Browser Key](https://github.com/jskvara/pwa-workshop/blob/master/docs/cdg-browser-key.png)
+
+Congratulations!
+
+You've now created a Google Cloud Messaging project. 
 
 
 2) Add `gcm_sender_id` to `manifest.json` file:
