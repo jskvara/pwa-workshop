@@ -3,7 +3,7 @@ var filesToCache = [
     '/',
     '/index.html',
     '/index.html?homescreen=1', // you have to add exact url with query parameters
-    '/main.js',
+    '/js/main.js'
 ];
 
 self.addEventListener('install', function(e) {

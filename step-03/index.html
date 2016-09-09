@@ -15,8 +15,7 @@
             background: #3f51b5;
             color: #fff;
             font-size: 16px;
-            padding: 0 16px;
-            position: fixed;
+            padding: 6px 16px;
             width: 100%;
             z-index: 1000;
         }
@@ -68,6 +67,7 @@
             animation: line 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite, rotate 1.6s linear infinite;
         }
     </style>
+    <link rel="stylesheet" href="styles/content.css" />
     <link rel="manifest" href="manifest.json">
 </head>
 <body>
@@ -80,6 +80,10 @@
     <svg viewBox="0 0 32 32" width="32" height="32">
         <circle class="spinner" cx="16" cy="16" r="14" fill="none"></circle>
     </svg>
+</div>
+
+<div class="content">
+    Content
 </div>
 
 <script src="js/main.js"></script>

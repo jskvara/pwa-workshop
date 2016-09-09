@@ -73,8 +73,7 @@ And we inline css styles just for the application shell into `<head>` element.
             background: #3f51b5;
             color: #fff;
             font-size: 16px;
-            padding: 0 16px;
-            position: fixed;
+            padding: 6px 16px;
             width: 100%;
             z-index: 1000;
         }
@@ -131,6 +130,8 @@ And we inline css styles just for the application shell into `<head>` element.
 ```
 
 It's not always necessary to put css into your head, you can use service workers to cache your css files.
+
+You can also embed basic data into your HTML file or combine it with different ways of caching.
 
 More resources:
 
@@ -205,8 +206,10 @@ Important options:
 ```
 
 
-For more information, read this article: [Installable Web Apps with the Web App Manifest in Chrome for Android](https://developers.google.com/web/updates/2014/11/Support-for-installable-web-apps-with-webapp-manifest-in-chrome-38-for-Android)
-or [W3C specification](https://w3c.github.io/manifest/)
+For more information, you can read the following content:
+
+ - [Installable Web Apps with the Web App Manifest in Chrome for Android](https://developers.google.com/web/updates/2014/11/Support-for-installable-web-apps-with-webapp-manifest-in-chrome-38-for-Android)
+ - [W3C specification](https://w3c.github.io/manifest/)
 
 ## Step 3 - Service worker
 
@@ -259,7 +262,7 @@ var filesToCache = [
     '/',
     '/index.html',
     '/index.html?homescreen=1', // you have to add exact url with query parameters
-    '/main.js',
+    '/js/main.js'
 ];
 
 self.addEventListener('install', function(e) {
@@ -375,6 +378,57 @@ And SUBSCRIPTION_ID is he last part of the subscription endpoint URL, and looks 
 curl --header "Authorization: key=AIzaSyAc2e8MeZHA5NfhPANea01wnyeQD7uVY0c" --header "Content-Type: application/json" https://android.googleapis.com/gcm/send -d "{\"registration_ids\":[\"APA91bE9DAy6_p9bZ9I58rixOv-ya6PsNMi9Nh5VfV4lpXGw1wS6kxrkQbowwBu17ryjGO0ExDlp-S-mCiwKc5HmVNbyVfylhgwITXBYsmSszpK0LpCxr9Cc3RgxqZD7614SqDokwsc3vIEXkaT8OPIM-mnGMRYG1-hsarEU4coJWNjdFP16gWs\"]}"
 ```
 
+We use fetch API to send a notification:
+
+Update `index.html` with the following code to add a new button:
+
+```html
+<div class="content">
+    <button id="send">Send notification</button><br />
+</div>
+```
+
+And update `main.js` file:
+
+```js
+var sub;
+
+...
+
+    }).then(function(reg) {
+        serviceWorkerRegistration = reg;
+        subscribeButton.disabled = false;
+        console.log('Service Worker is ready', reg);
+    }).catch(function(error) {
+
+...
+
+sendButton.addEventListener('click', function() {
+    if (isSubscribed && sub.endpoint.startsWith('https://android.googleapis.com/gcm/send')) {
+        var endpointParts = sub.endpoint.split('/');
+        var registrationId = endpointParts[endpointParts.length - 1];
+        fetch('https://android.googleapis.com/gcm/send', {
+            method: 'POST',
+            headers: new Headers({
+                'Authorization': 'key=AIzaSyAMzp4LO9CiODdPEpfe7eQtdKHlB3foxcs',
+                'Content-Type': 'application/json'
+            }),
+            body: JSON.stringify({
+                registration_ids: [registrationId]
+            })
+        }).then(function(response) {
+            console.log(response);
+        }).catch(function(err) {
+            console.error(error);
+        });
+    } else {
+        console.error('You need to subscribe');
+    }
+});
+```
+
+
+
 4. Show notification
 
 ```js
@@ -442,8 +496,9 @@ if ('serviceWorker' in navigator) {
         console.log(navigator.serviceWorker);
         return navigator.serviceWorker.ready;
     }).then(function(reg) {
-        console.log('Service Worker is ready', reg);
+        serviceWorkerRegistration = reg;
         subscribeButton.disabled = false;
+        console.log('Service Worker is ready', reg);
     }).catch(function(error) {
         console.log('Service Worker error', error);
     });
@@ -478,6 +533,11 @@ function unsubscribe() {
     });
 }
 ```
+
+More info:
+
+ - https://developers.google.com/web/updates/2015/03/push-notifications-on-the-open-web
+
 
 ## Step 6 - Deploy to firebase
 
